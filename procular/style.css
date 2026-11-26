@@ -1,0 +1,377 @@
+.numeric {
+  font-feature-settings: "tnum";
+}
+
+columnview.data-table > listview > row > cell {
+  padding: 1px 2px;
+  min-height: 22px;
+}
+
+columnview.data-table > listview > row > cell > label {
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+columnview.data-table > listview > row > cell > box,
+columnview.data-table > listview > row > cell > treeexpander {
+  padding: 0 4px;
+}
+
+columnview.data-table > header > button {
+  padding: 3px 6px;
+}
+
+columnview.procs > listview > row > cell treeexpander {
+  min-height: 20px;
+}
+
+.mini-graphs {
+  padding: 2px 4px;
+}
+
+.mini-graph,
+.graph {
+  border: 1px solid alpha(currentColor, 0.15);
+  border-radius: 3px;
+}
+
+.statusbar {
+  padding: 3px 12px;
+  border-top: 1px solid alpha(currentColor, 0.12);
+  font-size: 0.9em;
+}
+
+.statusbar label {
+  margin-right: 18px;
+}
+
+/* the expand/collapse and tree view buttons must not make the status bar taller */
+.statusbar button {
+  min-height: 0;
+  min-width: 0;
+  padding: 1px 4px;
+  margin: -2px 2px -2px 0;
+}
+
+.statusbar button:last-child {
+  margin-right: -8px;
+}
+
+.graph-caption {
+  font-weight: bold;
+}
+
+.dim {
+  opacity: 0.7;
+}
+
+.monospace-text {
+  font-family: monospace;
+}
+
+columnview.data-table > listview > row.hl-svc-failed {
+  box-shadow: inset 3px 0 alpha(@error_color, 0.85);
+}
+
+columnview.data-table > listview > row.hl-svc-failed label {
+  color: @error_color;
+  font-weight: bold;
+}
+
+columnview.data-table > listview > row.hl-svc-running > cell:first-child label {
+  font-weight: 600;
+}
+
+columnview.data-table > listview > row.hl-svc-inactive:not(:selected) label {
+  opacity: 0.62;
+}
+
+.status-dot {
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 50%;
+  background-color: alpha(currentColor, 0.35);
+}
+
+.status-dot.status-running {
+  background-color: @success_color;
+}
+
+.status-dot.status-active {
+  background-color: alpha(@success_color, 0.55);
+}
+
+.status-dot.status-changing {
+  background-color: @warning_color;
+}
+
+.status-dot.status-failed {
+  background-color: @error_color;
+}
+
+/* a row without a state (devices: a bus, a node no driver could take): no dot at all */
+.status-dot.status-none {
+  background-color: transparent;
+}
+
+.status-dot.status-inactive {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px alpha(currentColor, 0.5);
+}
+
+/* heat colouring of resource cells (process & history lists): one hue that gets denser,
+   so the low steps stay a quiet tint on dark and light backgrounds alike */
+columnview.data-table > listview > row > cell > label.heat-1,
+.info-swatch.heat-1 { background-color: alpha(#ff7800, 0.13); }
+columnview.data-table > listview > row > cell > label.heat-2,
+.info-swatch.heat-2 { background-color: alpha(#ff7800, 0.24); }
+columnview.data-table > listview > row > cell > label.heat-3,
+.info-swatch.heat-3 { background-color: alpha(#ff7800, 0.38); }
+columnview.data-table > listview > row > cell > label.heat-4,
+.info-swatch.heat-4 { background-color: alpha(#f0501e, 0.50); }
+columnview.data-table > listview > row > cell > label.heat-5,
+.info-swatch.heat-5 { background-color: alpha(#e01b24, 0.62); }
+
+/* suppress cell heat pills on new/terminated flash rows so colours don't clash */
+columnview.data-table > listview > row.hl-term > cell > label.heat-1,
+columnview.data-table > listview > row.hl-term > cell > label.heat-2,
+columnview.data-table > listview > row.hl-term > cell > label.heat-3,
+columnview.data-table > listview > row.hl-term > cell > label.heat-4,
+columnview.data-table > listview > row.hl-term > cell > label.heat-5,
+columnview.data-table > listview > row.hl-new > cell > label.heat-1,
+columnview.data-table > listview > row.hl-new > cell > label.heat-2,
+columnview.data-table > listview > row.hl-new > cell > label.heat-3,
+columnview.data-table > listview > row.hl-new > cell > label.heat-4,
+columnview.data-table > listview > row.hl-new > cell > label.heat-5 {
+  background-color: transparent;
+}
+
+/* system information detail cards */
+.stats-card {
+  padding: 12px 16px;
+}
+
+/* row colour settings (header bar popover) */
+.color-menu {
+  margin: 6px;
+}
+
+.color-menu colorbutton > button {
+  min-width: 0;
+  min-height: 0;
+  padding: 3px;
+}
+
+.color-menu colorbutton colorswatch {
+  min-width: 26px;
+  min-height: 16px;
+}
+
+/* explanations of the visible page (header bar popover) */
+.info-menu {
+  margin: 10px 14px 14px;
+}
+
+.info-subtitle {
+  font-size: 0.9em;
+  opacity: 0.6;
+  margin-bottom: 10px;
+}
+
+.info-term {
+  font-weight: bold;
+}
+
+.info-text {
+  font-size: 0.9em;
+  opacity: 0.65;
+}
+
+.info-legend {
+  margin: 3px 0 2px;
+}
+
+.info-legend-label {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.info-swatch {
+  min-width: 22px;
+  min-height: 14px;
+  border-radius: 3px;
+}
+
+/* the bottom edge of the popover while there is more to scroll to */
+.info-fade {
+  min-height: 40px;
+  background-image: linear-gradient(to bottom, alpha(@popover_bg_color, 0), @popover_bg_color);
+}
+
+/* values we are not allowed to read */
+label.na {
+  opacity: 0.4;
+}
+
+.compact-status {
+  margin: 24px;
+}
+
+/* activity bar in a table cell (disk tab, active time) */
+levelbar.cell-bar {
+  min-width: 36px;
+}
+
+levelbar.cell-bar trough,
+levelbar.cell-bar block {
+  min-height: 5px;
+}
+
+/* file system usage bars (system information, disk page) */
+levelbar block.disk-full {
+  background-color: @error_color;
+}
+
+/* context menus (tables, column headers): denser than the stock popover menu. No font-size
+   shrink here: a fractional font size (0.9em) puts the glyphs' horizontal strokes between
+   device pixels at fractional scales, e.g. the top bar of "E" turned into a faint line at 150%. */
+popover.menu.context-menu modelbutton,
+columnview header button > popover.menu modelbutton {
+  min-height: 26px;
+}
+
+.proc-menu-header {
+  padding: 4px 10px 2px;
+}
+
+.proc-menu-title {
+  font-weight: bold;
+}
+
+/* ---- process properties window ---- */
+.overview {
+  padding: 18px;
+}
+
+.stat-tile {
+  padding: 8px 12px 10px;
+  border-radius: 10px;
+  background-color: alpha(currentColor, 0.05);
+}
+
+.stat-value {
+  font-size: 1.3em;
+  font-weight: 700;
+}
+
+.badge-pill {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background-color: alpha(currentColor, 0.08);
+  font-size: 0.85em;
+}
+
+.chips-row {
+  padding: 8px 12px 10px;
+}
+
+.chips-title {
+  font-size: 0.85em;
+  opacity: 0.55;
+}
+
+.chip {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background-color: alpha(currentColor, 0.08);
+  font-size: 0.85em;
+}
+
+/* long values (paths, command line) in monospace */
+row.property.mono .subtitle {
+  font-family: monospace;
+}
+
+row.property.na .subtitle,
+.chip.na {
+  opacity: 0.4;
+}
+
+.sidebar-heading {
+  /* left edge lines up with the row icons (row margin 6px + padding 9px) */
+  padding: 12px 12px 4px 15px;
+  font-size: 0.8em;
+  font-weight: bold;
+  opacity: 0.55;
+}
+
+.navigation-sidebar > row:first-child .sidebar-heading,
+.navigation-sidebar > header:first-child .sidebar-heading {
+  padding-top: 4px;
+}
+
+.filter-bar {
+  padding: 6px 8px 6px 6px;
+}
+
+columnview.data-table > listview > row.hl-main label {
+  font-weight: bold;
+}
+
+columnview.data-table label.env-key {
+  font-weight: 600;
+}
+
+/* the process has exited: keep the last values readable but visibly stale */
+stack.exited {
+  opacity: 0.7;
+}
+
+/* denser one-line key/value rows */
+row.compact {
+  min-height: 34px;
+}
+
+row.compact > box.header {
+  min-height: 34px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+flowbox.stat-tiles > flowboxchild {
+  padding: 0;
+}
+
+/* ---- header bar logo (opens the About dialog) and the About dialog ---- */
+.logo-button {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 5px;
+}
+
+.about-text {
+  margin-top: 6px;
+}
+
+.about-tribute {
+  margin-top: 8px;
+  padding: 14px 16px;
+}
+
+.about-footer {
+  margin-top: 4px;
+  font-size: 0.85em;
+}
+
+/* device properties: the device itself in its connection path, and why it has no driver */
+row.current-device .title {
+  font-weight: bold;
+}
+
+.missing-driver {
+  padding: 12px 16px;
+}
+
+.missing-driver > image {
+  color: @warning_color;
+}

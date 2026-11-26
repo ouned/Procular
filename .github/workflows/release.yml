@@ -1,0 +1,64 @@
+name: Release
+
+# Push a version tag to release:  git tag -a v1.2.3 -m "Procular 1.2.3" && git push origin v1.2.3
+# A tag with a pre-release part (v1.2.3rc1, v1.2.3-beta.1) becomes a GitHub pre-release.
+on:
+  push:
+    tags: ["v[0-9]*"]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: ci
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # create the release
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # setuptools-scm takes the version from the tag
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install --quiet build
+          python -m build
+      - name: Build deb and rpm
+        # CI (above) has already built and test-installed them for this commit
+        run: |
+          pkg/build.sh deb dist
+          pkg/build.sh rpm dist
+      - name: Check the version matches the tag
+        id: version
+        run: |
+          python - "$GITHUB_REF_NAME" dist/*.whl <<'EOF' >> "$GITHUB_OUTPUT"
+          import os, sys
+          from packaging.version import Version  # comes with build
+          tag, wheel = sys.argv[1], os.path.basename(sys.argv[2])
+          built, wanted = Version(wheel.split("-")[1]), Version(tag.removeprefix("v"))
+          if built != wanted:
+              sys.exit(f"::error::built version {built} does not match tag {tag}")
+          print(f"version={built}")
+          print(f"prerelease={str(built.is_prerelease).lower()}")
+          EOF
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          VERSION: ${{ steps.version.outputs.version }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
+        # The sdist (procular-X.tar.gz) is the download for install.sh: it holds the whole
+        # source tree with the version stamped into procular/_version.txt. The .deb (Ubuntu 24.04+,
+        # Debian 13+) and .rpm (Fedora) are architecture independent.
+        run: |
+          set --
+          if [ "$PRERELEASE" = true ]; then set -- --prerelease; fi
+          gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --generate-notes \
+            --title "Procular $VERSION" "$@"

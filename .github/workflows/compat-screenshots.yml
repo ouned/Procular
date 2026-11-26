@@ -1,0 +1,59 @@
+name: Compat screenshots
+
+# tools/compat-test.sh on a runner: unit and UI tests in the target container, then
+# screenshots rendered there and on the runner (Ubuntu 24.04), side by side in compare/.
+# Slow and meant for human eyes, so it never runs by default: start it by hand, or add the
+# "compat-screenshots" label to a pull request (it then reruns on every push to that PR).
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Container to test, tools/compat/<target>.Containerfile
+        default: ubuntu-24.04
+  pull_request:
+    types: [labeled, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: compat-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compat:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (contains(github.event.pull_request.labels.*.name, 'compat-screenshots') &&
+       (github.event.action != 'labeled' || github.event.label.name == 'compat-screenshots'))
+    runs-on: ubuntu-24.04
+    env:
+      TARGET: ${{ inputs.target || 'ubuntu-24.04' }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install dependencies for the runner-side screenshots
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1 python3-psutil \
+            mutter librsvg2-common adwaita-icon-theme fonts-ubuntu \
+            gsettings-desktop-schemas dconf-gsettings-backend dbus-daemon
+      - name: Session bus
+        # compat-test.sh hands $XDG_RUNTIME_DIR/bus to the container
+        run: |
+          rt=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+          [ -d "$rt" ] || sudo install -d -o "$(id -u)" -g "$(id -g)" -m 700 "$rt"
+          [ -S "$rt/bus" ] || dbus-daemon --session --fork --address="unix:path=$rt/bus"
+          echo "XDG_RUNTIME_DIR=$rt" >> "$GITHUB_ENV"
+          echo "DBUS_SESSION_BUS_ADDRESS=unix:path=$rt/bus" >> "$GITHUB_ENV"
+      - name: Compat test
+        run: tools/compat-test.sh "$TARGET" "compat-out/$TARGET"
+      - name: Upload screenshots and logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: compat-${{ env.TARGET }}
+          path: compat-out/
+          if-no-files-found: warn

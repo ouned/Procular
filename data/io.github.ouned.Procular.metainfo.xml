@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.ouned.Procular</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Procular</name>
+  <summary>Manage processes, services and connections</summary>
+  <developer id="io.github.ouned">
+    <name>Michael Losert</name>
+  </developer>
+  <description>
+    <p>
+      A process manager for administrators and developers, inspired by System Informer.
+      It reads /proc, cgroups, systemd and D-Bus to show what every process is doing.
+    </p>
+    <ul>
+      <li>Live process tree with 38 columns, history sparklines and heat-coloured CPU, memory and I/O</li>
+      <li>Detailed process properties: threads, modules, memory regions, open files, sockets, environment</li>
+      <li>Terminate, suspend, change priority or CPU affinity, also for other users' processes</li>
+      <li>Systemd services with journal, network connections, disk activity and exited processes</li>
+      <li>System information for CPU, memory, disks, network interfaces and GPUs</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">io.github.ouned.Procular.desktop</launchable>
+  <provides>
+    <binary>procular</binary>
+  </provides>
+  <url type="homepage">https://github.com/ouned/Procular</url>
+  <url type="bugtracker">https://github.com/ouned/Procular/issues</url>
+  <url type="vcs-browser">https://github.com/ouned/Procular</url>
+  <categories>
+    <category>System</category>
+    <category>Monitor</category>
+  </categories>
+  <supports>
+    <control>keyboard</control>
+    <control>pointing</control>
+  </supports>
+  <requires>
+    <display_length compare="ge">768</display_length>
+  </requires>
+  <content_rating type="oars-1.1"/>
+  <screenshots>
+    <screenshot type="default">
+      <caption>The process tree</caption>
+      <image>https://raw.githubusercontent.com/ouned/Procular/main/docs/screenshots/processes-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Properties of one process</caption>
+      <image>https://raw.githubusercontent.com/ouned/Procular/main/docs/screenshots/properties-general-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>System information</caption>
+      <image>https://raw.githubusercontent.com/ouned/Procular/main/docs/screenshots/sysinfo-summary-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Systemd services</caption>
+      <image>https://raw.githubusercontent.com/ouned/Procular/main/docs/screenshots/services-light.png</image>
+    </screenshot>
+  </screenshots>
+</component>

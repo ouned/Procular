@@ -1,0 +1,24 @@
+Source: procular
+Section: admin
+Priority: optional
+Maintainer: Michael Losert <michael@losert.org>
+Build-Depends: debhelper-compat (= 13), dh-python, python3
+Standards-Version: 4.7.0
+Homepage: https://github.com/ouned/Procular
+Rules-Requires-Root: no
+
+Package: procular
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}, python3 (>= 3.12), python3-gi, python3-gi-cairo,
+ python3-psutil, gir1.2-gtk-4.0 (>= 4.12), gir1.2-adw-1 (>= 1.5)
+Recommends: pkexec | policykit-1, iproute2
+Suggests: pipewire-bin | pulseaudio-utils | alsa-utils
+Description: process manager for administrators and developers
+ Procular is a process manager for GNOME, inspired by System Informer. It
+ shows a live process tree with detailed per-process properties (threads,
+ memory regions, open files, sockets, environment), systemd services with
+ their journal, network connections, disk activity, exited processes and
+ system information for CPU, memory, disks, network interfaces and GPUs.
+ .
+ Actions on other users' processes go through a small, strictly validated
+ helper run with pkexec.

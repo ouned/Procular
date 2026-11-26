@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Procular
+GenericName=Process Manager
+Comment=Process manager for administrators and developers
+Exec=procular
+Icon=io.github.ouned.Procular
+Terminal=false
+Categories=GTK;GNOME;System;Monitor;
+Keywords=process;task;manager;monitor;kill;service;systemd;network;cpu;memory;
+StartupNotify=true
+DBusActivatable=false

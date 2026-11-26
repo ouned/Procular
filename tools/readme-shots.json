@@ -1,0 +1,22 @@
+{
+  "warmup": 200,
+  "settle": 1.5,
+  "sizes": {"main": "1360x860", "sysinfo": "1100x760", "props": "1000x740"},
+  "early": ["sysinfo", "props:@demo-load.py", "propspage:performance"],
+  "shots": [
+    {"name": "processes", "target": "main", "actions": ["page:processes"], "wait": {"cpu": 60, "samples": 5}},
+    {"name": "sysinfo-summary", "target": "sysinfo", "actions": ["sysinfopage:summary", "graphhover:off"]},
+    {"name": "sysinfo-cores", "target": "sysinfo",
+     "actions": ["sysinfocores:on", "sysinfopage:cpu", "graphhover:off"]},
+    {"name": "sysinfo-gpu", "target": "sysinfo", "actions": ["sysinfocores:off", "sysinfopage:gpu0"]},
+    {"name": "sysinfo-pressure", "target": "sysinfo", "actions": ["sysinfopage:pressure", "graphhover:off"]},
+    {"name": "sysinfo-network", "target": "sysinfo",
+     "actions": ["sysinfopage:network",
+                 "redact:Host name|DNS servers|Search domains|Network (SSID)|Access point|IPv6 addresses|IPv6 gateway|MAC address"]},
+    {"name": "properties", "target": "props", "actions": ["propspage:performance"]},
+    {"name": "properties-general", "target": "props", "actions": ["propspage:general"]},
+    {"name": "services", "target": "main", "actions": ["page:services"]},
+    {"name": "history", "target": "main", "actions": ["page:history"]},
+    {"name": "devices", "target": "main", "actions": ["page:devices"]}
+  ]
+}

@@ -1,0 +1,130 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call: # release.yml runs the same checks on the tagged commit
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install linters
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends appstream desktop-file-utils libxml2-utils shellcheck
+      - name: ruff
+        # pinned: the rule set is spelled out in pyproject.toml, but new ruff releases still change findings
+        run: pipx run --spec ruff==0.17.6 ruff check --output-format=github .
+      - name: shellcheck
+        run: shellcheck install.sh procular.sh tools/*.sh pkg/*.sh
+      - name: Desktop file
+        run: desktop-file-validate data/*.desktop
+      - name: polkit policy
+        run: xmllint --noout data/*.policy
+      - name: AppStream metainfo
+        run: appstreamcli validate --no-net --explain data/*.metainfo.xml
+
+  test:
+    name: test (${{ matrix.image }})
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - image: ubuntu:24.04 # oldest supported stack: GTK 4.14, libadwaita 1.5, Python 3.12
+            pm: apt
+          - image: debian:13
+            pm: apt
+          - image: fedora:45 # newest stack, catches upcoming Python / GTK changes early; bump with Fedora
+            pm: dnf
+    steps:
+      - name: Install dependencies (apt)
+        if: matrix.pm == 'apt'
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends git ca-certificates procps \
+            python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1 python3-psutil python3-pytest mutter dbus-daemon
+      - name: Install dependencies (dnf)
+        if: matrix.pm == 'dnf'
+        run: |
+          dnf install -y -q git procps-ng python3-gobject gtk4 libadwaita python3-psutil python3-pytest \
+            mutter dbus-daemon
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Versions
+        run: python3 tools/print-versions.py
+      - name: pytest
+        # in an off-screen Wayland session (headless mutter): the widget tests and tests/test_ui.py
+        # need a display (without systemd here, the Services test skips; see the ui-tests job)
+        run: tools/headless-session.sh python3 -m pytest -q -p no:cacheprovider
+
+  packages:
+    # Builds the .deb and .rpm in Podman containers (as release.yml does), then installs each in
+    # fresh containers of the distributions it is meant for, checks it starts and removes it.
+    name: deb and rpm packages
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build
+        run: |
+          pkg/build.sh deb dist
+          pkg/build.sh rpm dist
+      - name: Install, run and remove
+        run: |
+          for image in ubuntu:24.04 debian:13; do pkg/smoke-test.sh dist/*.deb "docker.io/library/$image"; done
+          for image in fedora:43 fedora:45; do pkg/smoke-test.sh dist/*.rpm "docker.io/library/$image"; done
+      - name: Upload packages
+        # also on failure: a package that fails the smoke test can be inspected
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: packages
+          path: |
+            dist/*.deb
+            dist/*.rpm
+          if-no-files-found: error
+          retention-days: 14
+
+  ui-tests:
+    # tests/test_ui.py on the runner itself, not in a container: the Services tab needs a system
+    # D-Bus with systemd behind it, and the tests a realistic process list. ubuntu-24.04 is also
+    # the oldest supported stack. They fail on GTK warnings and on exceptions in callbacks.
+    name: UI tests (Ubuntu 24.04)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-adw-1 python3-psutil python3-pytest \
+            mutter dbus-daemon librsvg2-common adwaita-icon-theme fonts-ubuntu \
+            gsettings-desktop-schemas dconf-gsettings-backend
+      - name: GTK settings for the headless session
+        # Without a DPI, libadwaita 1.5 mis-sizes "sp" units (see tools/compat/*.Containerfile).
+        run: install -D -m 644 tools/compat/gtk-settings.ini ~/.config/gtk-4.0/settings.ini
+      - name: Versions
+        run: python3 tools/print-versions.py
+      - name: UI tests
+        run: PROCULAR_DEBUG_LIFECYCLE=1 tools/headless-session.sh python3 -m pytest -v -p no:cacheprovider tests/test_ui.py

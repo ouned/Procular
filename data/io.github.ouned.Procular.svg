@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5e5c64"/><stop offset="1" stop-color="#3d3846"/></linearGradient>
+    <linearGradient id="pin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f8e45c"/><stop offset="1" stop-color="#e5a50a"/></linearGradient>
+  </defs>
+  <g fill="url(#pin)" stroke="#a36a00" stroke-width="2.5">
+    <rect x="32" y="8" width="8" height="16" rx="2"/><rect x="46" y="8" width="8" height="16" rx="2"/><rect x="60" y="8" width="8" height="16" rx="2"/><rect x="74" y="8" width="8" height="16" rx="2"/><rect x="88" y="8" width="8" height="16" rx="2"/>
+    <rect x="32" y="104" width="8" height="16" rx="2"/><rect x="46" y="104" width="8" height="16" rx="2"/><rect x="60" y="104" width="8" height="16" rx="2"/><rect x="74" y="104" width="8" height="16" rx="2"/><rect x="88" y="104" width="8" height="16" rx="2"/>
+    <rect x="8" y="32" width="16" height="8" rx="2"/><rect x="8" y="46" width="16" height="8" rx="2"/><rect x="8" y="60" width="16" height="8" rx="2"/><rect x="8" y="74" width="16" height="8" rx="2"/><rect x="8" y="88" width="16" height="8" rx="2"/>
+    <rect x="104" y="32" width="16" height="8" rx="2"/><rect x="104" y="46" width="16" height="8" rx="2"/><rect x="104" y="60" width="16" height="8" rx="2"/><rect x="104" y="74" width="16" height="8" rx="2"/><rect x="104" y="88" width="16" height="8" rx="2"/>
+  </g>
+  <rect x="18" y="22" width="92" height="88" rx="14" fill="#241f31"/>
+  <rect x="18" y="18" width="92" height="88" rx="14" fill="url(#chip)"/>
+  <rect x="30" y="30" width="68" height="64" rx="8" fill="#1a1625"/>
+  <path d="M46 46 V80 M46 60 H64 M46 80 H64 M64 60 V70 M64 70 H80" stroke="#77767b" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="46" cy="44" r="7" fill="#62a0ea"/>
+  <circle cx="64" cy="60" r="6" fill="#57e389"/>
+  <circle cx="80" cy="70" r="5.5" fill="#f6d32d"/>
+  <circle cx="64" cy="80" r="6" fill="#ed333b"/>
+  <circle cx="96" cy="32" r="3" fill="#77767b"/>
+</svg>

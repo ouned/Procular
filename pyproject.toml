@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "procular"
+dynamic = ["version"]
+description = "A process manager for administrators and developers on GNOME"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = ["psutil>=5.9", "PyGObject>=3.46"]
+
+[project.scripts]
+procular = "procular.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["procular*"]
+
+[tool.setuptools.package-data]
+procular = ["style.css", "style-light.css", "_version.txt"]
+
+[tool.setuptools_scm]
+# Version from git tags (v1.2.3); also stamped into the package for the About dialog.
+version_file = "procular/_version.txt"
+version_file_template = "{version}\n"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+# A small, stable rule set. Ruff's own default set grows between releases, so it is
+# spelled out here and CI pins the ruff version (.github/workflows/ci.yml).
+select = ["E4", "E7", "E9", "F", "W", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["ui: drives the running app (tests/test_ui.py); skipped without a display"]

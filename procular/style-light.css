@@ -1,0 +1,39 @@
+/* Loaded on top of style.css while the light style is active (ProcularApp._update_light_css).
+
+   Dimming by opacity costs the light style about twice the contrast it costs the dark one:
+   dark-style text is white at ~15:1, light-style text dark grey at ~10:1, so the same 40 %
+   that leaves 3.6:1 on dark leaves 2:1 on light. These raise the light style's dimmed text
+   to ~4.5:1 on the window background (and ~3:1 on the tinted rows). */
+
+/* column titles: libadwaita mixes them at 40 % (alpha(), not color-mix(): GTK 4.14 has no color-mix) */
+columnview > header > button > box {
+  color: alpha(currentColor, 0.65);
+}
+
+columnview > header > button:hover > box {
+  color: alpha(currentColor, 0.85);
+}
+
+.dim {
+  opacity: 0.8;
+}
+
+label.na,
+row.property.na .subtitle,
+.chip.na {
+  opacity: 0.6;
+}
+
+columnview.data-table > listview > row.hl-svc-inactive:not(:selected) label {
+  opacity: 0.75;
+}
+
+.info-subtitle,
+.chips-title,
+.sidebar-heading {
+  opacity: 0.75;
+}
+
+.info-text {
+  opacity: 0.8;
+}
